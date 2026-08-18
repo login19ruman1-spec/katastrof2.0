@@ -1,38 +1,69 @@
-# DisasterPanel Configuration
+# DisasterPanel v2.0 - Конфигурация
+
+# Основные настройки
 settings:
-  # Default world for disasters
-  default-world: "world"
-  
-  # Particle density (1-10)
-  particle-density: 5
-  
-  # Sound volume multiplier (0.5-2.0)
-  sound-multiplier: 1.0
+  # Язык интерфейса (ru/ru)
+  language: "ru"
+  # Максимальный радиус действия катастроф
+  max-radius: 200
+  # Минимальный радиус
+  min-radius: 10
+  # Интервал проверки игроков (тиков)
+  check-interval: 5
 
+# Землетрясение
 earthquake:
-  # Radius in blocks
-  radius: 100
-  # Duration in seconds per level
-  duration-per-level: 5
-  # Max intensity
-  max-intensity: 7
+  # Максимальная интенсивность (1-10)
+  max-intensity: 10
+  # Длительность на каждый уровень (секунд)
+  duration-per-level: 6
+  # Радиус действия
+  radius: 150
+  # Интенсивность при которой появляются разломы
+  fissure-level: 5
+  # Максимальное количество разломов
+  max-fissures: 20
 
+# Метеорит
 meteorite:
-  # Start height in blocks
+  # Начальная высота
   start-height: 2000
-  # Impact radius
-  impact-radius: 30
-  # Fire duration in seconds
-  fire-duration: 60
-  # Danger zone duration in seconds
-  danger-duration: 60
+  # Радиус кратера
+  crater-radius: 15
+  # Длительность огня (секунд)
+  fire-duration: 45
+  # Длительность опасной зоны (секунд)
+  danger-duration: 30
+  # Сила взрыва
+  explosion-power: 4.0
+  # Максимальная скорость падения
+  max-fall-speed: 35
 
+# Вулкан
 volcano:
-  # Default lava rise level
-  default-rise: 20
-  # Default lava fall level
-  default-fall: 10
-  # Delay before eruption (seconds)
-  eruption-delay: 10
-  # Re-eruption cooldown (minutes)
-  re-eruption-cooldown: 2
+  # Время до извержения (секунд)
+  eruption-delay: 15
+  # Высота подъёма лавы
+  lava-rise-height: 25
+  # Высота спада лавы
+  lava-fall-height: 10
+  # Время остывания (секунд)
+  cool-down-time: 20
+  # Время до повторного извержения (секунд)
+  re-eruption-delay: 120
+  # Радиус вулкана
+  radius: 5
+
+# Настройки GUI
+gui:
+  # Названия панелей
+  main-title: "§8▸ §c✧ §4Панель Управления §c✧ §8◂"
+  earthquake-title: "§8▸ §c⚡ §4Землетрясение §c⚡ §8◂"
+  meteorite-title: "§8▸ §c☄ §4Метеорит §c☄ §8◂"
+  volcano-title: "§8▸ §c🌋 §4Вулкан §c🌋 §8◂"
+  # Цветовая схема
+  color-primary: "§c"
+  color-secondary: "§6"
+  color-accent: "§b"
+  color-success: "§a"
+  color-error: "§4"
