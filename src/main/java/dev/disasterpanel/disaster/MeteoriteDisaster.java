@@ -137,7 +137,6 @@ public class MeteoriteDisaster {
                 }
 
                 // Fire in crater
-                int fireDuration = plugin.getConfigManager().getMeteoriteFireDuration();
                 for (int i = 0; i < size * 3; i++) {
                     Location fireLoc = impactLocation.clone().add(
                             (Math.random() - 0.5) * size * 2,
@@ -160,7 +159,7 @@ public class MeteoriteDisaster {
                 world.playSound(impactLocation, Sound.ENTITY_GENERIC_EXPLODE, 3.0f, 0.5f);
                 world.playSound(impactLocation, Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 2.0f, 0.7f);
 
-                // Start danger zone timer
+                // Start danger zone timer with visual effects
                 new BukkitRunnable() {
                     int dangerTicks = 0;
                     int maxDangerTicks = plugin.getConfigManager().getMeteoriteDangerDuration() * 20;
@@ -172,16 +171,20 @@ public class MeteoriteDisaster {
                             return;
                         }
                         
-                        // Show danger zone particles - используем SPELL_MOB (работает в Purpur 1.21.4)
-                        for (int i = 0; i < 10; i++) {
-                            double angle = Math.random() * 2 * Math.PI;
-                            double dist = Math.random() * size * 2;
-                            Location loc = impactLocation.clone().add(
-                                    Math.cos(angle) * dist,
-                                    0.5 + Math.random(),
-                                    Math.sin(angle) * dist
-                            );
-                            world.spawnParticle(Particle.SPELL_MOB, loc, 1, 0, 0, 0, 0);
+                        // Show danger zone with smoke and fire particles
+                        if (dangerTicks % 5 == 0) {
+                            for (int i = 0; i < 8; i++) {
+                                double angle = Math.random() * 2 * Math.PI;
+                                double dist = Math.random() * size * 2;
+                                Location loc = impactLocation.clone().add(
+                                        Math.cos(angle) * dist,
+                                        0.5 + Math.random() * 2,
+                                        Math.sin(angle) * dist
+                                );
+                                // Используем стандартные частицы, которые точно есть
+                                world.spawnParticle(Particle.SMOKE, loc, 1, 0.2, 0.2, 0.2, 0.01);
+                                world.spawnParticle(Particle.FLAME, loc, 1, 0.1, 0.1, 0.1, 0.01);
+                            }
                         }
                         
                         dangerTicks++;
