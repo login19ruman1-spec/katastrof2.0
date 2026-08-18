@@ -20,13 +20,11 @@ public class MeteoriteGUI {
         
         Inventory gui = Bukkit.createInventory(null, 54, ChatColor.translateAlternateColorCodes('&', title));
 
-        // Фон
         ItemStack bg = createGlass(Material.BLACK_STAINED_GLASS_PANE);
         for (int i = 0; i < 54; i++) {
             gui.setItem(i, bg);
         }
 
-        // Заголовок
         ItemStack header = createItem(
                 Material.FIRE_CHARGE,
                 "§6☄ §lУПРАВЛЕНИЕ МЕТЕОРИТОМ",
@@ -39,7 +37,6 @@ public class MeteoriteGUI {
 
         MeteoriteDisaster md = DisasterPanel.getInstance().getMeteorite();
 
-        // Статус метеорита
         String statusColor = md.isActive() ? "§a" : "§c";
         String statusText = md.isActive() ? "В ПУТИ" : "ОЖИДАНИЕ";
         if (md.isImpacted()) {
@@ -55,7 +52,6 @@ public class MeteoriteGUI {
         );
         gui.setItem(19, status);
 
-        // Траектория (визуализация высоты)
         String[] heights = {"2000", "1500", "1000", "500", "0"};
         String[] heightLabels = {"§aВход в атмосферу", "§eНачало свечения", "§6Ускорение", "§cКритическая точка", "§4УДАР!"};
         
@@ -72,7 +68,6 @@ public class MeteoriteGUI {
             gui.setItem(28 + i, height);
         }
 
-        // Действие при ударе
         ItemStack impact = createItem(
                 Material.TNT,
                 "§c§l🔥 ПОСЛЕДСТВИЯ УДАРА",
@@ -82,7 +77,6 @@ public class MeteoriteGUI {
         );
         gui.setItem(37, impact);
 
-        // Кнопки управления
         ItemStack launch = createItem(
                 Material.GREEN_CONCRETE,
                 "§a☄ ЗАПУСТИТЬ",
@@ -110,19 +104,4 @@ public class MeteoriteGUI {
     private static ItemStack createItem(Material material, String name, String... lore) {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
-        meta.setLore(Arrays.stream(lore)
-                .map(line -> ChatColor.translateAlternateColorCodes('&', line))
-                .toList());
-        item.setItemMeta(meta);
-        return item;
-    }
-
-    private static ItemStack createGlass(Material material) {
-        ItemStack item = new ItemStack(material);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(" ");
-        item.setItemMeta(meta);
-        return item;
-    }
-}
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&
