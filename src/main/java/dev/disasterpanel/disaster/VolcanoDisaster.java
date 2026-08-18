@@ -29,15 +29,16 @@ public class VolcanoDisaster {
         
         this.active = true;
         this.center = center.clone();
-        this.maxLavaLevel = plugin.getConfigManager().getVolcanoDefaultRise();
+        this.maxLavaLevel = plugin.getConfigManager().getVolcanoLavaRiseHeight();
         this.lavaLevel = 0;
         this.cooled = false;
 
         int delay = plugin.getConfigManager().getVolcanoEruptionDelay();
 
+        plugin.getLogger().info("§eВулкан активирован! Извержение через " + delay + " секунд");
+
         task = new BukkitRunnable() {
             int ticks = 0;
-            boolean eruptionStarted = false;
 
             @Override
             public void run() {
@@ -52,9 +53,8 @@ public class VolcanoDisaster {
                     return;
                 }
 
-                // Phase 1: Pre-eruption (waiting)
+                // Фаза 1: Подготовка
                 if (ticks < delay * 20) {
-                    // Smoke particles before eruption
                     if (ticks % 5 == 0) {
                         for (int i = 0; i < 5; i++) {
                             Location smokeLoc = center.clone().add(
@@ -70,13 +70,12 @@ public class VolcanoDisaster {
                     return;
                 }
 
-                // Phase 2: Eruption - Lava rising
+                // Фаза 2: Извержение - подъём лавы
                 if (lavaLevel < maxLavaLevel) {
                     double riseSpeed = 0.5;
                     lavaLevel += riseSpeed;
                     
-                    // Create lava columns
-                    int radius = 3;
+                    int radius = plugin.getConfigManager().getVolcanoRadius();
                     for (int x = -radius; x <= radius; x++) {
                         for (int z = -radius; z <= radius; z++) {
                             if (Math.abs(x) + Math.abs(z) <= radius) {
@@ -89,7 +88,6 @@ public class VolcanoDisaster {
                         }
                     }
                     
-                    // Eruption particles
                     if (ticks % 3 == 0) {
                         for (int i = 0; i < 15; i++) {
                             double angle = Math.random() * 2 * Math.PI;
@@ -102,7 +100,6 @@ public class VolcanoDisaster {
                             );
                             world.spawnParticle(Particle.LAVA, loc, 1, 0.5, 0.5, 0.5, 0.05);
                             world.spawnParticle(Particle.FLAME, loc, 2, 0.3, 0.3, 0.3, 0.02);
-                            // Исправлено: SMOKE_LARGE -> SMOKE
                             world.spawnParticle(Particle.SMOKE, loc, 1, 0.5, 0.5, 0.5, 0);
                         }
                         
@@ -111,10 +108,10 @@ public class VolcanoDisaster {
                     }
                 }
                 
-                // Phase 3: Cooling - Convert lava to obsidian
+                // Фаза 3: Остывание
                 else if (!cooled) {
                     cooled = true;
-                    int radius = 3;
+                    int radius = plugin.getConfigManager().getVolcanoRadius();
                     
                     for (int y = 0; y <= maxLavaLevel; y += 2) {
                         for (int x = -radius; x <= radius; x++) {
@@ -124,7 +121,6 @@ public class VolcanoDisaster {
                                     Block block = world.getBlockAt(loc);
                                     if (block.getType() == Material.LAVA) {
                                         block.setType(Material.OBSIDIAN);
-                                        // Исправлено: SMOKE_LARGE -> SMOKE
                                         world.spawnParticle(Particle.SMOKE, loc, 3, 0.3, 0.3, 0.3, 0);
                                         world.playSound(loc, Sound.BLOCK_LAVA_EXTINGUISH, 0.5f, 0.8f);
                                     }
@@ -133,16 +129,17 @@ public class VolcanoDisaster {
                         }
                     }
                     
-                    // Schedule re-eruption check
-                    int coolDown = 30;
+                    plugin.getLogger().info("§eЛава остыла, образовался обсидиан");
+                    
+                    // Проверка на разрушение обсидиана
+                    int coolDown = plugin.getConfigManager().getVolcanoCoolDownTime();
                     new BukkitRunnable() {
                         @Override
                         public void run() {
                             if (!active) return;
                             
-                            // Check if obsidian is broken
                             boolean broken = false;
-                            int radius = 3;
+                            int radius = plugin.getConfigManager().getVolcanoRadius();
                             for (int y = 0; y <= maxLavaLevel; y += 2) {
                                 for (int x = -radius; x <= radius; x++) {
                                     for (int z = -radius; z <= radius; z++) {
@@ -163,17 +160,17 @@ public class VolcanoDisaster {
                             }
                             
                             if (broken) {
-                                // Re-eruption after 2 minutes
-                                int reDelay = 120;
+                                plugin.getLogger().info("§cОбсидиан разрушен! Вулкан перезапускается...");
+                                int reDelay = plugin.getConfigManager().getVolcanoReEruptionDelay();
                                 new BukkitRunnable() {
                                     @Override
                                     public void run() {
                                         if (active) {
-                                            // Reset and restart eruption
                                             lavaLevel = 0;
                                             cooled = false;
                                             ticks = delay * 20;
                                             world.playSound(center, Sound.ENTITY_ENDER_DRAGON_GROWL, 2.0f, 0.5f);
+                                            plugin.getLogger().info("§eВулкан извергается снова!");
                                         }
                                     }
                                 }.runTaskLater(plugin, reDelay * 20L);
@@ -194,11 +191,10 @@ public class VolcanoDisaster {
         }
         active = false;
         
-        // Clean up lava and obsidian blocks
         if (center != null) {
             World world = center.getWorld();
             if (world != null) {
-                int radius = 4;
+                int radius = plugin.getConfigManager().getVolcanoRadius() + 2;
                 for (int y = 0; y <= maxLavaLevel + 10; y++) {
                     for (int x = -radius; x <= radius; x++) {
                         for (int z = -radius; z <= radius; z++) {
@@ -217,7 +213,7 @@ public class VolcanoDisaster {
             }
         }
         
-        plugin.getLogger().info("Volcano stopped");
+        plugin.getLogger().info("§cВулкан остановлен");
     }
 
     public boolean isActive() {
