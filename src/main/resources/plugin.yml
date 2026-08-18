@@ -1,21 +1,18 @@
 name: DisasterPanel
-version: 1.0.0
+version: 2.0.0
 main: dev.disasterpanel.DisasterPanel
 api-version: 1.21
-authors: [DisasterDev]
-description: Advanced disaster management plugin with futuristic GUI
+author: DisasterPanel Team
+description: Реалистичная система управления катастрофами с красивым GUI
 
 commands:
   disaster:
-    description: Open disaster control panel
+    description: Открыть панель управления катастрофами
     usage: /disaster
     permission: disasterpanel.admin
-    aliases: [dp, paneld]
+    aliases: [dp, катастрофа]
 
 permissions:
   disasterpanel.admin:
-    description: Access to disaster panel
+    description: Доступ к панели управления катастрофами
     default: op
-  disasterpanel.use:
-    description: Use disaster features
-    default: true
