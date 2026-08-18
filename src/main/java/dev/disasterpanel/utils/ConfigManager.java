@@ -52,7 +52,7 @@ public class ConfigManager {
         return config.getInt("earthquake.max-fissures", 20);
     }
 
-    // Метеорит
+    // Метеорит - ИСПРАВЛЕНО
     public int getMeteoriteStartHeight() {
         return config.getInt("meteorite.start-height", 2000);
     }
@@ -77,7 +77,7 @@ public class ConfigManager {
         return config.getInt("meteorite.max-fall-speed", 35);
     }
 
-    // Вулкан
+    // Вулкан - ИСПРАВЛЕНО
     public int getVolcanoEruptionDelay() {
         return config.getInt("volcano.eruption-delay", 15);
     }
