@@ -102,7 +102,8 @@ public class VolcanoDisaster {
                             );
                             world.spawnParticle(Particle.LAVA, loc, 1, 0.5, 0.5, 0.5, 0.05);
                             world.spawnParticle(Particle.FLAME, loc, 2, 0.3, 0.3, 0.3, 0.02);
-                            world.spawnParticle(Particle.SMOKE_LARGE, loc, 1, 0.5, 0.5, 0.5, 0);
+                            // Исправлено: SMOKE_LARGE -> SMOKE
+                            world.spawnParticle(Particle.SMOKE, loc, 1, 0.5, 0.5, 0.5, 0);
                         }
                         
                         world.playSound(center, Sound.BLOCK_LAVA_POP, 1.0f, 0.7f + (float)Math.random() * 0.3f);
@@ -123,7 +124,8 @@ public class VolcanoDisaster {
                                     Block block = world.getBlockAt(loc);
                                     if (block.getType() == Material.LAVA) {
                                         block.setType(Material.OBSIDIAN);
-                                        world.spawnParticle(Particle.SMOKE_LARGE, loc, 3, 0.3, 0.3, 0.3, 0);
+                                        // Исправлено: SMOKE_LARGE -> SMOKE
+                                        world.spawnParticle(Particle.SMOKE, loc, 3, 0.3, 0.3, 0.3, 0);
                                         world.playSound(loc, Sound.BLOCK_LAVA_EXTINGUISH, 0.5f, 0.8f);
                                     }
                                 }
