@@ -1,0 +1,38 @@
+# DisasterPanel Configuration
+settings:
+  # Default world for disasters
+  default-world: "world"
+  
+  # Particle density (1-10)
+  particle-density: 5
+  
+  # Sound volume multiplier (0.5-2.0)
+  sound-multiplier: 1.0
+
+earthquake:
+  # Radius in blocks
+  radius: 100
+  # Duration in seconds per level
+  duration-per-level: 5
+  # Max intensity
+  max-intensity: 7
+
+meteorite:
+  # Start height in blocks
+  start-height: 2000
+  # Impact radius
+  impact-radius: 30
+  # Fire duration in seconds
+  fire-duration: 60
+  # Danger zone duration in seconds
+  danger-duration: 60
+
+volcano:
+  # Default lava rise level
+  default-rise: 20
+  # Default lava fall level
+  default-fall: 10
+  # Delay before eruption (seconds)
+  eruption-delay: 10
+  # Re-eruption cooldown (minutes)
+  re-eruption-cooldown: 2
