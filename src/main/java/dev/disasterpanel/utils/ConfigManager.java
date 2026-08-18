@@ -51,4 +51,22 @@ public class ConfigManager {
     }
     
     public int getMeteoriteDangerDuration() {
-        return config
+        return config.getInt("meteorite.danger-duration", 60);
+    }
+    
+    public int getVolcanoDefaultRise() {
+        return config.getInt("volcano.default-rise", 20);
+    }
+    
+    public int getVolcanoDefaultFall() {
+        return config.getInt("volcano.default-fall", 10);
+    }
+    
+    public int getVolcanoEruptionDelay() {
+        return config.getInt("volcano.eruption-delay", 10);
+    }
+    
+    public int getVolcanoReEruptionCooldown() {
+        return config.getInt("volcano.re-eruption-cooldown", 2);
+    }
+}
