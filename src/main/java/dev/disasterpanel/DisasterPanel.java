@@ -4,69 +4,66 @@ import dev.disasterpanel.command.DisasterCommand;
 import dev.disasterpanel.disaster.EarthquakeDisaster;
 import dev.disasterpanel.disaster.MeteoriteDisaster;
 import dev.disasterpanel.disaster.VolcanoDisaster;
-import dev.disasterpanel.listener.DisasterListener;
 import dev.disasterpanel.utils.ConfigManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class DisasterPanel extends JavaPlugin {
-    
+
     private static DisasterPanel instance;
     private ConfigManager configManager;
-    private EarthquakeDisaster earthquakeDisaster;
-    private MeteoriteDisaster meteoriteDisaster;
-    private VolcanoDisaster volcanoDisaster;
-    
+    private EarthquakeDisaster earthquake;
+    private MeteoriteDisaster meteorite;
+    private VolcanoDisaster volcano;
+
     @Override
     public void onEnable() {
         instance = this;
         
-        // Save default config
+        // Загружаем конфиг
         saveDefaultConfig();
-        
-        // Initialize managers
         configManager = new ConfigManager(this);
         
-        // Initialize disasters
-        earthquakeDisaster = new EarthquakeDisaster(this);
-        meteoriteDisaster = new MeteoriteDisaster(this);
-        volcanoDisaster = new VolcanoDisaster(this);
+        // Инициализируем катастрофы
+        earthquake = new EarthquakeDisaster(this);
+        meteorite = new MeteoriteDisaster(this);
+        volcano = new VolcanoDisaster(this);
         
-        // Register commands
+        // Регистрируем команду
         getCommand("disaster").setExecutor(new DisasterCommand(this));
         
-        // Register listeners
-        getServer().getPluginManager().registerEvents(new DisasterListener(this), this);
-        
-        getLogger().info("DisasterPanel v1.0.0 enabled!");
+        getLogger().info("§a=================================");
+        getLogger().info("§a  DisasterPanel v2.0 загружен!");
+        getLogger().info("§a  Система катастроф активирована");
+        getLogger().info("§a=================================");
     }
-    
+
     @Override
     public void onDisable() {
-        // Cleanup any running disasters
-        if (earthquakeDisaster != null) earthquakeDisaster.stop();
-        if (meteoriteDisaster != null) meteoriteDisaster.stop();
-        if (volcanoDisaster != null) volcanoDisaster.stop();
+        // Останавливаем все катастрофы
+        if (earthquake != null) earthquake.stop();
+        if (meteorite != null) meteorite.stop();
+        if (volcano != null) volcano.stop();
         
-        getLogger().info("DisasterPanel disabled!");
+        getLogger().info("§cDisasterPanel выключен");
     }
-    
+
     public static DisasterPanel getInstance() {
         return instance;
     }
-    
+
     public ConfigManager getConfigManager() {
         return configManager;
     }
-    
-    public EarthquakeDisaster getEarthquakeDisaster() {
-        return earthquakeDisaster;
+
+    public EarthquakeDisaster getEarthquake() {
+        return earthquake;
     }
-    
-    public MeteoriteDisaster getMeteoriteDisaster() {
-        return meteoriteDisaster;
+
+    public MeteoriteDisaster getMeteorite() {
+        return meteorite;
     }
-    
-    public VolcanoDisaster getVolcanoDisaster() {
-        return volcanoDisaster;
+
+    public VolcanoDisaster getVolcano() {
+        return volcano;
     }
 }
