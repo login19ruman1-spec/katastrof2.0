@@ -67,7 +67,6 @@ public class EarthquakeDisaster {
                         double randomY = Math.random() * shakeStrength * 0.4;
                         player.setVelocity(player.getVelocity().add(new org.bukkit.util.Vector(randomX, randomY, randomZ)));
                         
-                        // Звуки в зависимости от интенсивности
                         if (ticks % 15 == 0) {
                             float pitch = Math.max(0.3f, 1.0f - (intensity / 12.0f));
                             float volume = Math.min(0.5f + (intensity / 20.0f), 2.0f);
@@ -91,14 +90,12 @@ public class EarthquakeDisaster {
                         fissures.add(fissure);
                         fissureCount++;
                         
-                        // Визуальные эффекты разлома
                         world.spawnParticle(Particle.CRIT, fissure, 15, 0.5, 0.3, 0.5, 0.1);
                         world.spawnParticle(Particle.SMOKE, fissure, 10, 0.5, 0.3, 0.5, 0.05);
                         world.playSound(fissure, Sound.BLOCK_STONE_BREAK, 0.8f, 0.7f);
                     }
                 }
 
-                // Частицы эффекта землетрясения
                 if (ticks % 3 == 0) {
                     for (int i = 0; i < Math.min(intensity * 2, 15); i++) {
                         double angle = Math.random() * 2 * Math.PI;
