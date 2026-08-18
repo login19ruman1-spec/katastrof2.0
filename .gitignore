@@ -1,0 +1,62 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE files
+.idea/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+logs/
+*.log
+
+# Test results
+test-output/
+surefire-reports/
+
+# Plugin output
+*.jar
+!target/*-shaded.jar
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+
+# Configuration with sensitive data
+config.yml
+!src/main/resources/config.yml
+server.properties
+bukkit.yml
+spigot.yml
+paper.yml
+purpur.yml
+
+# Server files (if you run local server)
+server/
+plugins/
+world/
+world_nether/
+world_the_end/
