@@ -34,7 +34,7 @@ public class MeteoriteDisaster {
         int startHeight = plugin.getConfigManager().getMeteoriteStartHeight();
         this.currentLocation = target.clone().add(0, startHeight, 0);
 
-        int size = plugin.getConfigManager().getMeteoriteImpactRadius();
+        int size = plugin.getConfigManager().getMeteoriteCraterRadius();
 
         task = new BukkitRunnable() {
             int speed = 1;
@@ -49,7 +49,6 @@ public class MeteoriteDisaster {
                 }
 
                 if (impacted) {
-                    // Handle danger zone
                     int dangerDuration = plugin.getConfigManager().getMeteoriteDangerDuration();
                     if (ticks < dangerDuration * 20) {
                         World world = impactLocation.getWorld();
@@ -68,8 +67,7 @@ public class MeteoriteDisaster {
                     return;
                 }
 
-                // Move meteorite down with acceleration
-                speed = Math.min(speed + 1, 25);
+                speed = Math.min(speed + 1, plugin.getConfigManager().getMeteoriteMaxFallSpeed());
                 height -= speed;
                 currentLocation.setY(currentLocation.getY() - speed);
 
@@ -79,7 +77,6 @@ public class MeteoriteDisaster {
                     return;
                 }
 
-                // Sound effects based on height
                 if (height < 1500 && height > 500) {
                     if (ticks % 10 == 0) {
                         world.playSound(currentLocation, Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 0.5f, 1.0f);
@@ -90,14 +87,12 @@ public class MeteoriteDisaster {
                     }
                 }
 
-                // Particles for trail
                 if (ticks % 2 == 0) {
                     world.spawnParticle(Particle.FLAME, currentLocation, 10, 1, 0.5, 1, 0.1);
                     world.spawnParticle(Particle.LAVA, currentLocation, 5, 0.5, 0.5, 0.5, 0.05);
                     world.spawnParticle(Particle.SMOKE, currentLocation, 5, 1, 0.5, 1, 0);
                 }
 
-                // Impact
                 if (height <= 0) {
                     impact();
                     return;
@@ -115,9 +110,9 @@ public class MeteoriteDisaster {
                     return;
                 }
 
-                int size = plugin.getConfigManager().getMeteoriteImpactRadius();
+                int size = plugin.getConfigManager().getMeteoriteCraterRadius();
 
-                // Create crater
+                // Создание кратера
                 for (int x = -size; x <= size; x++) {
                     for (int z = -size; z <= size; z++) {
                         double distance = Math.sqrt(x*x + z*z);
@@ -136,7 +131,7 @@ public class MeteoriteDisaster {
                     }
                 }
 
-                // Fire in crater
+                // Огонь в кратере
                 for (int i = 0; i < size * 3; i++) {
                     Location fireLoc = impactLocation.clone().add(
                             (Math.random() - 0.5) * size * 2,
@@ -148,10 +143,9 @@ public class MeteoriteDisaster {
                     }
                 }
 
-                // Explosion
-                world.createExplosion(impactLocation, size * 2, true, true);
+                // Взрыв
+                world.createExplosion(impactLocation, (float)plugin.getConfigManager().getMeteoriteExplosionPower(), true, true);
                 
-                // Massive particles
                 world.spawnParticle(Particle.EXPLOSION, impactLocation, 1, 0, 0, 0, 0);
                 world.spawnParticle(Particle.CLOUD, impactLocation, 10, 2, 2, 2, 0);
                 world.spawnParticle(Particle.FLAME, impactLocation, 50, 3, 3, 3, 0.1);
@@ -159,7 +153,7 @@ public class MeteoriteDisaster {
                 world.playSound(impactLocation, Sound.ENTITY_GENERIC_EXPLODE, 3.0f, 0.5f);
                 world.playSound(impactLocation, Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 2.0f, 0.7f);
 
-                // Start danger zone timer with visual effects
+                // Опасная зона
                 new BukkitRunnable() {
                     int dangerTicks = 0;
                     int maxDangerTicks = plugin.getConfigManager().getMeteoriteDangerDuration() * 20;
@@ -171,7 +165,6 @@ public class MeteoriteDisaster {
                             return;
                         }
                         
-                        // Show danger zone with smoke and fire particles
                         if (dangerTicks % 5 == 0) {
                             for (int i = 0; i < 8; i++) {
                                 double angle = Math.random() * 2 * Math.PI;
@@ -181,7 +174,6 @@ public class MeteoriteDisaster {
                                         0.5 + Math.random() * 2,
                                         Math.sin(angle) * dist
                                 );
-                                // Используем стандартные частицы, которые точно есть
                                 world.spawnParticle(Particle.SMOKE, loc, 1, 0.2, 0.2, 0.2, 0.01);
                                 world.spawnParticle(Particle.FLAME, loc, 1, 0.1, 0.1, 0.1, 0.01);
                             }
@@ -201,7 +193,7 @@ public class MeteoriteDisaster {
         }
         active = false;
         impacted = false;
-        plugin.getLogger().info("Meteorite stopped");
+        plugin.getLogger().info("§cМетеорит остановлен");
     }
 
     public boolean isActive() {
