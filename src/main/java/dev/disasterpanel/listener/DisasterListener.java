@@ -1,10 +1,7 @@
 package dev.disasterpanel.listener;
 
 import dev.disasterpanel.DisasterPanel;
-import dev.disasterpanel.gui.DisasterGUI;
-import dev.disasterpanel.gui.EarthquakeGUI;
-import dev.disasterpanel.gui.MeteoriteGUI;
-import dev.disasterpanel.gui.VolcanoGUI;
+import dev.disasterpanel.gui.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -12,23 +9,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class DisasterListener implements Listener {
     
     private final DisasterPanel plugin;
-    private final DisasterGUI mainGUI;
-    private final EarthquakeGUI earthquakeGUI;
-    private final MeteoriteGUI meteoriteGUI;
-    private final VolcanoGUI volcanoGUI;
     
     public DisasterListener(DisasterPanel plugin) {
         this.plugin = plugin;
-        this.mainGUI = new DisasterGUI(plugin);
-        this.earthquakeGUI = new EarthquakeGUI(plugin);
-        this.meteoriteGUI = new MeteoriteGUI(plugin);
-        this.volcanoGUI = new VolcanoGUI(plugin);
     }
     
     @EventHandler
@@ -38,115 +26,102 @@ public class DisasterListener implements Listener {
         Player player = (Player) event.getWhoClicked();
         String title = event.getView().getTitle();
         
-        // Cancel click if it's one of our GUIs
-        if (title.contains("Disaster Control") || 
-            title.contains("EARTHQUAKE") || 
-            title.contains("METEORITE") || 
-            title.contains("VOLCANO")) {
+        if (title.contains("Панель Управления") || 
+            title.contains("Землетрясение") || 
+            title.contains("Метеорит") || 
+            title.contains("Вулкан")) {
             event.setCancelled(true);
         }
         
         ItemStack clickedItem = event.getCurrentItem();
         if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
         
-        // Handle main menu clicks
-        if (title.contains("Disaster Control")) {
-            handleMainMenuClick(player, clickedItem);
+        String name = clickedItem.getItemMeta().getDisplayName();
+        
+        // Главное меню
+        if (title.contains("Панель Управления")) {
+            handleMainMenuClick(player, name);
         }
-        // Handle earthquake GUI clicks
-        else if (title.contains("EARTHQUAKE")) {
-            handleEarthquakeClick(player, clickedItem);
+        // Землетрясение
+        else if (title.contains("Землетрясение")) {
+            handleEarthquakeClick(player, name);
         }
-        // Handle meteorite GUI clicks
-        else if (title.contains("METEORITE")) {
-            handleMeteoriteClick(player, clickedItem);
+        // Метеорит
+        else if (title.contains("Метеорит")) {
+            handleMeteoriteClick(player, name);
         }
-        // Handle volcano GUI clicks
-        else if (title.contains("VOLCANO")) {
-            handleVolcanoClick(player, clickedItem);
+        // Вулкан
+        else if (title.contains("Вулкан")) {
+            handleVolcanoClick(player, name);
         }
     }
     
-    private void handleMainMenuClick(Player player, ItemStack item) {
-        String name = item.getItemMeta().getDisplayName();
-        
-        if (name.contains("EARTHQUAKE")) {
-            earthquakeGUI.open(player);
-        } else if (name.contains("METEORITE")) {
-            meteoriteGUI.open(player);
-        } else if (name.contains("VOLCANO")) {
-            volcanoGUI.open(player);
-        } else if (name.contains("STOP ALL")) {
-            plugin.getEarthquakeDisaster().stop();
-            plugin.getMeteoriteDisaster().stop();
-            plugin.getVolcanoDisaster().stop();
-            player.sendMessage(ChatColor.GREEN + "All disasters stopped!");
+    private void handleMainMenuClick(Player player, String name) {
+        if (name.contains("ЗЕМЛЕТРЯСЕНИЕ")) {
+            EarthquakeGUI.open(player);
+        } else if (name.contains("МЕТЕОРИТ")) {
+            MeteoriteGUI.open(player);
+        } else if (name.contains("ВУЛКАН")) {
+            VolcanoGUI.open(player);
+        } else if (name.contains("Закрыть")) {
             player.closeInventory();
         }
     }
     
-    private void handleEarthquakeClick(Player player, ItemStack item) {
-        String name = item.getItemMeta().getDisplayName();
-        
-        if (name.contains("Level")) {
+    private void handleEarthquakeClick(Player player, String name) {
+        if (name.contains("Уровень")) {
             try {
-                String[] parts = name.split(" ");
-                int level = Integer.parseInt(parts[1].replaceAll("[^0-9]", ""));
-                plugin.getEarthquakeDisaster().start(player.getLocation(), level);
-                player.sendMessage(ChatColor.GREEN + "Earthquake level " + level + " started!");
+                String levelStr = name.replaceAll("[^0-9]", "");
+                int level = Integer.parseInt(levelStr);
+                plugin.getEarthquake().start(player.getLocation(), level);
+                player.sendMessage("§a⚡ Землетрясение уровня " + level + " начато!");
+                player.closeInventory();
             } catch (NumberFormatException ignored) {}
-        } else if (name.contains("START")) {
-            plugin.getEarthquakeDisaster().start(player.getLocation(), 4);
-            player.sendMessage(ChatColor.GREEN + "Earthquake started!");
-        } else if (name.contains("STOP")) {
-            plugin.getEarthquakeDisaster().stop();
-            player.sendMessage(ChatColor.RED + "Earthquake stopped!");
-        } else if (name.contains("BACK")) {
-            mainGUI.openMainMenu(player);
+        } else if (name.contains("ОСТАНОВИТЬ")) {
+            plugin.getEarthquake().stop();
+            player.sendMessage("§cЗемлетрясение остановлено!");
+            player.closeInventory();
+        } else if (name.contains("НАЗАД")) {
+            MainGUI.open(player);
         }
     }
     
-    private void handleMeteoriteClick(Player player, ItemStack item) {
-        String name = item.getItemMeta().getDisplayName();
-        
-        if (name.contains("LAUNCH")) {
-            plugin.getMeteoriteDisaster().start(player.getLocation());
-            player.sendMessage(ChatColor.GREEN + "Meteorite launched!");
-        } else if (name.contains("STOP")) {
-            plugin.getMeteoriteDisaster().stop();
-            player.sendMessage(ChatColor.RED + "Meteorite stopped!");
-        } else if (name.contains("BACK")) {
-            mainGUI.openMainMenu(player);
+    private void handleMeteoriteClick(Player player, String name) {
+        if (name.contains("ЗАПУСТИТЬ")) {
+            plugin.getMeteorite().start(player.getLocation());
+            player.sendMessage("§6☄ Метеорит запущен!");
+            player.closeInventory();
+        } else if (name.contains("ОСТАНОВИТЬ")) {
+            plugin.getMeteorite().stop();
+            player.sendMessage("§cМетеорит остановлен!");
+            player.closeInventory();
+        } else if (name.contains("НАЗАД")) {
+            MainGUI.open(player);
         }
     }
     
-    private void handleVolcanoClick(Player player, ItemStack item) {
-        String name = item.getItemMeta().getDisplayName();
-        
-        if (name.contains("ERUPT")) {
-            plugin.getVolcanoDisaster().start(player.getLocation());
-            player.sendMessage(ChatColor.GREEN + "Volcano eruption started!");
-        } else if (name.contains("STOP")) {
-            plugin.getVolcanoDisaster().stop();
-            player.sendMessage(ChatColor.RED + "Volcano stopped!");
-        } else if (name.contains("BACK")) {
-            mainGUI.openMainMenu(player);
+    private void handleVolcanoClick(Player player, String name) {
+        if (name.contains("ИЗВЕРГНУТЬ")) {
+            plugin.getVolcano().start(player.getLocation());
+            player.sendMessage("§c🌋 Вулкан начал извержение!");
+            player.closeInventory();
+        } else if (name.contains("ОСТАНОВИТЬ")) {
+            plugin.getVolcano().stop();
+            player.sendMessage("§cВулкан остановлен!");
+            player.closeInventory();
+        } else if (name.contains("НАЗАД")) {
+            MainGUI.open(player);
         }
     }
     
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent event) {
         String title = event.getView().getTitle();
-        if (title.contains("Disaster Control") || 
-            title.contains("EARTHQUAKE") || 
-            title.contains("METEORITE") || 
-            title.contains("VOLCANO")) {
+        if (title.contains("Панель Управления") || 
+            title.contains("Землетрясение") || 
+            title.contains("Метеорит") || 
+            title.contains("Вулкан")) {
             event.setCancelled(true);
         }
-    }
-    
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        // Cleanup any player-specific data if needed
     }
 }
