@@ -94,7 +94,8 @@ public class MeteoriteDisaster {
                 if (ticks % 2 == 0) {
                     world.spawnParticle(Particle.FLAME, currentLocation, 10, 1, 0.5, 1, 0.1);
                     world.spawnParticle(Particle.LAVA, currentLocation, 5, 0.5, 0.5, 0.5, 0.05);
-                    world.spawnParticle(Particle.SMOKE_LARGE, currentLocation, 5, 1, 0.5, 1, 0);
+                    // Исправлено: SMOKE_LARGE -> CAMPFIRE_COSY_SMOKE или SMOKE
+                    world.spawnParticle(Particle.SMOKE, currentLocation, 5, 1, 0.5, 1, 0);
                 }
 
                 // Impact
@@ -152,9 +153,9 @@ public class MeteoriteDisaster {
                 // Explosion
                 world.createExplosion(impactLocation, size * 2, true, true);
                 
-                // Massive particles
-                world.spawnParticle(Particle.EXPLOSION_HUGE, impactLocation, 1, 0, 0, 0, 0);
-                world.spawnParticle(Particle.EXPLOSION_LARGE, impactLocation, 5, 2, 2, 2, 0);
+                // Massive particles - исправлено: EXPLOSION_HUGE -> EXPLOSION, EXPLOSION_LARGE -> CLOUD
+                world.spawnParticle(Particle.EXPLOSION, impactLocation, 1, 0, 0, 0, 0);
+                world.spawnParticle(Particle.CLOUD, impactLocation, 10, 2, 2, 2, 0);
                 world.spawnParticle(Particle.FLAME, impactLocation, 50, 3, 3, 3, 0.1);
                 
                 world.playSound(impactLocation, Sound.ENTITY_GENERIC_EXPLODE, 3.0f, 0.5f);
@@ -172,7 +173,7 @@ public class MeteoriteDisaster {
                             return;
                         }
                         
-                        // Show danger zone particles
+                        // Show danger zone particles - исправлено: SPELL_WITCH -> SPELL
                         for (int i = 0; i < 10; i++) {
                             double angle = Math.random() * 2 * Math.PI;
                             double dist = Math.random() * size * 2;
@@ -181,7 +182,7 @@ public class MeteoriteDisaster {
                                     0.5 + Math.random(),
                                     Math.sin(angle) * dist
                             );
-                            world.spawnParticle(Particle.SPELL_WITCH, loc, 1, 0, 0, 0, 0);
+                            world.spawnParticle(Particle.SPELL, loc, 1, 0, 0, 0, 0);
                         }
                         
                         dangerTicks++;
